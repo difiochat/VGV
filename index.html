@@ -34,22 +34,24 @@ main{max-width:1200px;margin:auto;padding:36px 22px 70px}.sectionhead{display:fl
 <main>
 <section id="catalogo">
  <div class="sectionhead"><div><span class="eyebrow">Catálogo</span><h2>Productos disponibles</h2><div class="muted" id="count">Cargando productos…</div></div></div>
- <div class="controls"><input class="field search" id="search" type="search" placeholder="Buscar producto…" aria-label="Buscar producto"><select class="field select" id="sort" aria-label="Ordenar"><option value="default">Orden recomendado</option><option value="asc">Precio: menor a mayor</option><option value="desc">Precio: mayor a menor</option><option value="name">Nombre A–Z</option></select></div>
+ <div class="controls"><input class="field search" id="search" type="search" placeholder="Buscar producto…" aria-label="Buscar producto"><select class="field select" id="brandfilter" aria-label="Filtrar por marca"><option value="all">Todas las marcas</option></select><select class="field select" id="sort" aria-label="Ordenar"><option value="default">Orden recomendado</option><option value="asc">Precio: menor a mayor</option><option value="desc">Precio: mayor a menor</option><option value="name">Nombre A–Z</option><option value="brand">Marca A–Z</option></select></div>
  <div class="grid" id="products"></div>
 </section>
 <section class="checkout" id="pedido">
  <div class="sectionhead"><div><span class="eyebrow">Finalizar compra</span><h2>Tu pedido</h2><div class="muted">Revisa tu carrito y completa tus datos.</div></div></div>
  <div class="checkoutgrid">
-  <div class="panel"><h3>Resumen del carrito</h3><div id="cartitems"><p class="muted">Todavía no has agregado productos.</p></div><div class="totals"><div class="totalrow"><span>Subtotal de productos</span><strong id="subtotal">$0.00</strong></div><div class="totalrow"><span>Envío</span><strong id="shipping">$6.00</strong></div><div class="totalrow final"><span>Total a pagar</span><strong id="grandtotal">$6.00</strong></div></div></div>
+  <div class="panel"><h3>Resumen del carrito</h3><div id="cartitems"><p class="muted">Todavía no has agregado productos.</p></div><div class="totals"><div class="totalrow"><span>Subtotal de productos</span><strong id="subtotal">$0.00</strong></div><div class="totalrow"><span>Envío</span><strong id="shipping">$5.00</strong></div><div class="totalrow final"><span>Total a pagar</span><strong id="grandtotal">$5.00</strong></div></div></div>
   <div class="panel"><h3>Datos de entrega y pago</h3>
    <form id="orderform">
     <div class="formgrid">
      <div><label for="customer">Nombre completo *</label><input class="field" id="customer" required autocomplete="name"></div>
      <div><label for="phone">Teléfono *</label><input class="field" id="phone" required type="tel" autocomplete="tel"></div>
-     <div class="full"><label for="address">Dirección / ciudad de entrega *</label><input class="field" id="address" required autocomplete="street-address"></div>
+     <div class="full"><label for="address">Dirección / ciudad de entrega (si aplica)</label><input class="field" id="address" autocomplete="street-address" placeholder="Si eliges retiro en tienda, puedes dejarlo vacío"></div>
      <div class="full"><label>Método de envío *</label>
-      <label class="radioopt"><input type="radio" name="shippingmethod" value="manporcar" checked><span><strong>Manporcar — $5</strong><br><small>Tarifa fija según la opción elegida.</small></span></label>
-      <label class="radioopt"><input type="radio" name="shippingmethod" value="terminal"><span><strong>Por terminal — desde $6</strong><br><small>$6 hasta $250; $7 para más de $250 hasta $350; luego suma $1 por cada siguiente rango de $100.</small></span></label>
+      <label class="radioopt"><input type="radio" name="shippingmethod" value="manporcar" checked><span><strong>Manporcar — $5</strong><br><small>Tarifa fija.</small></span></label>
+      <label class="radioopt"><input type="radio" name="shippingmethod" value="terminal"><span><strong>Por terminal</strong><br><small>Costo de envío por confirmar por WhatsApp.</small></span></label>
+      <label class="radioopt"><input type="radio" name="shippingmethod" value="tramaco"><span><strong>Tramaco / Servientrega</strong><br><small>Costo de envío por confirmar por WhatsApp.</small></span></label>
+      <label class="radioopt"><input type="radio" name="shippingmethod" value="retiro"><span><strong>Retiro en tienda — Manta, Ilove Apple</strong><br><small>Sin costo extra.</small></span></label>
      </div>
      <div class="full"><label for="receipt">Comprobante de pago (imagen o PDF)</label><input class="field" id="receipt" type="file" accept="image/*,.pdf,application/pdf"><small class="muted">En esta versión inicial el archivo se selecciona en tu dispositivo, pero todavía no se carga a un servidor.</small></div>
      <div class="full"><label for="notes">Notas del pedido (opcional)</label><textarea class="field" id="notes" rows="3" placeholder="Referencia, variante, indicaciones…"></textarea></div>
@@ -71,18 +73,41 @@ const cart=new Map();
 const $=id=>document.getElementById(id);
 const money=n=>"$"+Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function inferBrand(name){
+ const n=name.toUpperCase();
+ const brands=[
+  ["FROZEN FRUIT MONSTER","Frozen Fruit Monster"],["CUSTARD MONSTER","Custard Monster"],["TOBACCO MONSTER","Tobacco Monster"],
+  ["BRASS KNUCKLES","Brass Knuckles"],["KING CREST","King Crest"],["NASTY JUICE","Nasty Juice"],["VAPE GOURMET","Vape Gourmet"],
+  ["VAPORESSO","Vaporesso"],["ZEN HAUS","Zen Haus"],["BIG CHIEF","Big Chief"],["GEEK BAR","Geek Bar"],["GEEKBAR","Geek Bar"],
+  ["GEEK VAPE","GeekVape"],["UWELL","Uwell"],["ELFBAR","Elfbar"],["EXTRAX","Extrax"],["FUME","Fume"],["HQD","HQD"],
+  ["BATON","Baton"],["BALI","Bali"],["SMOK","SMOK"],["VOOPOO","Voopoo"],["SUORIN","Suorin"],["XVAPE","XVape"],
+  ["SKWEZED","Skwezed"],["THE BERG","The Berg"],["ONE UP","One Up"],["QUINTOELEMENTO","Quinto Elemento"],
+  ["QUINTO ELEMENTO","Quinto Elemento"],["WEFUME","Wefume"],["MOTI","MOTI"],["LOST MARY","Lost Mary"],["OXBAR","Oxbar"],
+  ["JUICE HEAD","Juice Head"],["DON JUAN","King Crest"],["NORD","SMOK"],["PNP","Voopoo"],["TPP","Voopoo"],["UFORCE","Voopoo"],
+  ["RPM","SMOK"]
+ ];
+ for(const [key,label] of brands){if(n.startsWith(key)||new RegExp("\\b"+key.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b").test(n)) return label;}
+ return "Otras marcas";
+}
+products.forEach(p=>p.brand=inferBrand(p.name));
+function fillBrandFilter(){
+ const brands=[...new Set(products.map(p=>p.brand))].sort((a,b)=>a.localeCompare(b,"es"));
+ $("brandfilter").innerHTML='<option value="all">Todas las marcas</option>'+brands.map(b=>`<option value="${escapeHtml(b)}">${escapeHtml(b)}</option>`).join("");
+}
 function shippingCost(subtotal,method){
  if(method==="manporcar") return 5;
- if(subtotal<=250) return 6;
- if(subtotal<=350) return 7;
- return 8+Math.floor((subtotal-350.000001)/100);
+ if(method==="retiro") return 0;
+ return null;
 }
+function shippingLabel(method){return ({manporcar:"Manporcar",terminal:"Por terminal",tramaco:"Tramaco / Servientrega",retiro:"Retiro en tienda Manta, Ilove Apple"})[method]||method;}
 function visibleProducts(){
- let arr=products.filter(p=>p.name.toLowerCase().includes($("search").value.trim().toLowerCase()));
+ const query=$("search").value.trim().toLowerCase(),brand=$("brandfilter").value;
+ let arr=products.filter(p=>p.name.toLowerCase().includes(query)&&(brand==="all"||p.brand===brand));
  const sort=$("sort").value;
  if(sort==="asc")arr.sort((a,b)=>a.price-b.price);
  if(sort==="desc")arr.sort((a,b)=>b.price-a.price);
  if(sort==="name")arr.sort((a,b)=>a.name.localeCompare(b.name,"es"));
+ if(sort==="brand")arr.sort((a,b)=>a.brand.localeCompare(b.brand,"es")||a.name.localeCompare(b.name,"es"));
  return arr;
 }
 function renderProducts(){
@@ -91,7 +116,7 @@ function renderProducts(){
  $("products").innerHTML=arr.map((p)=>{
  const qty=cart.get(p.name)||0;
  const unavailable=p.stock<=0;
- return `<article class="product"><div class="producttop"></div><div class="productbody"><h3>${escapeHtml(p.name)}</h3><div class="price">${money(p.price)}</div><div class="stock">${unavailable?"Existencias por confirmar":`Existencias registradas: ${p.stock}`}</div><button class="btn add" data-name="${escapeHtml(p.name)}" ${unavailable?"disabled":""}>${unavailable?"Consultar disponibilidad":(qty?"Agregar otro":"Agregar al carrito")}</button></div></article>`;
+ return `<article class="product"><div class="producttop"></div><div class="productbody"><div class="stock"><strong>Marca:</strong> ${escapeHtml(p.brand)}</div><h3>${escapeHtml(p.name)}</h3><div class="price">${money(p.price)}</div><div class="stock">${unavailable?"Existencias por confirmar":`Existencias registradas: ${p.stock}`}</div><button class="btn add" data-name="${escapeHtml(p.name)}" ${unavailable?"disabled":""}>${unavailable?"Consultar disponibilidad":(qty?"Agregar otro":"Agregar al carrito")}</button></div></article>`;
  }).join("")||'<div class="empty">No encontramos productos con esa búsqueda.</div>';
  $("products").querySelectorAll("[data-name]").forEach(b=>b.addEventListener("click",()=>{const p=products.find(x=>x.name===b.dataset.name);if(p&&p.stock>0){cart.set(p.name,(cart.get(p.name)||0)+1);renderProducts();renderCart();}}));
 }
@@ -105,21 +130,24 @@ function renderCart(){
  $("cartitems").querySelectorAll("[data-plus]").forEach(b=>b.onclick=()=>changeQty(b.dataset.plus,1));
  $("cartitems").querySelectorAll("[data-remove]").forEach(b=>b.onclick=()=>{cart.delete(b.dataset.remove);renderProducts();renderCart();});
  const subtotal=getSubtotal(), method=document.querySelector('input[name="shippingmethod"]:checked').value, shipping=shippingCost(subtotal,method);
- $("subtotal").textContent=money(subtotal);$("shipping").textContent=money(shipping);$("grandtotal").textContent=money(subtotal+shipping);
+ $("subtotal").textContent=money(subtotal);$("shipping").textContent=shipping===null?"Por confirmar":money(shipping);$("grandtotal").textContent=shipping===null?"Por confirmar":money(subtotal+shipping);
 }
 function changeQty(name,delta){const p=products.find(x=>x.name===name),q=(cart.get(name)||0)+delta;if(q<=0)cart.delete(name);else if(q<=p.stock)cart.set(name,q);renderProducts();renderCart();}
-$("search").addEventListener("input",renderProducts);$("sort").addEventListener("change",renderProducts);
+$("search").addEventListener("input",renderProducts);$("brandfilter").addEventListener("change",renderProducts);$("sort").addEventListener("change",renderProducts);
 document.querySelectorAll('input[name="shippingmethod"]').forEach(r=>r.addEventListener("change",renderCart));
 $("orderform").addEventListener("submit",e=>{
  e.preventDefault();if(!cart.size){alert("Agrega al menos un producto al carrito.");return;}
  const method=document.querySelector('input[name="shippingmethod"]:checked').value;
- const subtotal=getSubtotal(),ship=shippingCost(subtotal,method),items=[...cart.entries()].map(([n,q])=>`- ${n} x${q}: ${money(products.find(p=>p.name===n).price*q)}`).join("\n");
+ const subtotal=getSubtotal(),ship=shippingCost(subtotal,method),items=[...cart.entries()].map(([n,q])=>{const p=products.find(p=>p.name===n);return `- ${n} [Marca: ${p.brand}] x${q}: ${money(p.price*q)}`}).join("\n");
  const receipt=$("receipt").files[0];
- const msg=`Hola VGV, deseo realizar este pedido:\n\n${items}\n\nSubtotal: ${money(subtotal)}\nEnvío (${method==="manporcar"?"Manporcar":"terminal"}): ${money(ship)}\nTOTAL: ${money(subtotal+ship)}\n\nNombre: ${$("customer").value}\nTeléfono: ${$("phone").value}\nDirección: ${$("address").value}\nNotas: ${$("notes").value||"Ninguna"}\n\n${receipt?`Seleccioné un comprobante llamado "${receipt.name}", pero debo adjuntarlo manualmente en WhatsApp.`:"Aún no adjunto el comprobante de pago."}\nPor favor confirmar disponibilidad y recepción del pedido.`;
+ const shippingText=ship===null?"Costo por confirmar":money(ship);
+ const totalText=ship===null?"Por confirmar":money(subtotal+ship);
+ const addressText=method==="retiro"?"Retiro en tienda: Manta, Ilove Apple":$("address").value;
+ const msg=`Hola VGV, deseo realizar este pedido:\n\n${items}\n\nSubtotal: ${money(subtotal)}\nMétodo de entrega: ${shippingLabel(method)}\nCosto de envío: ${shippingText}\nTOTAL: ${totalText}\n\nNombre: ${$("customer").value}\nTeléfono: ${$("phone").value}\nDirección / referencia: ${addressText}\nNotas: ${$("notes").value||"Ninguna"}\n\n${receipt?`Seleccioné un comprobante llamado "${receipt.name}", pero debo adjuntarlo manualmente en WhatsApp.`:"Aún no adjunto el comprobante de pago."}\nPor favor confirmar disponibilidad y recepción del pedido.`;
  window.open("https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(msg),"_blank","noopener");
  if(receipt) alert("WhatsApp se abrirá con el resumen del pedido. Por seguridad, debes adjuntar manualmente el archivo del comprobante en ese chat. Esta página aún no lo sube a un servidor.");
 });
-renderProducts();renderCart();
+fillBrandFilter();renderProducts();renderCart();
 </script>
 </body>
 </html>
