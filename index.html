@@ -18,23 +18,94 @@ main{max-width:1200px;margin:auto;padding:36px 22px 70px}.sectionhead{display:fl
 .floatwa{position:fixed;right:20px;bottom:20px;z-index:8;background:#16834a;color:#fff;text-decoration:none;border-radius:999px;padding:15px 20px;font-weight:800;box-shadow:0 8px 28px #0003;display:flex;align-items:center;gap:9px}
 .floatwa:hover{transform:translateY(-2px)}
 @media(max-width:650px){.floatwa{right:12px;bottom:12px;padding:13px 16px}}
+
+/* Navegación compacta y menús rápidos */
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+.top{padding:7px 14px;font-size:12px}
+.nav{padding:12px 20px;position:sticky;top:0;z-index:20;background:#ffffffed;backdrop-filter:blur(12px);box-shadow:0 3px 18px #1111}
+.navright{gap:8px}
+.navmenu{position:relative}
+.navmenu summary{list-style:none;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:999px;padding:10px 14px;font-weight:800;white-space:nowrap}
+.navmenu summary::-webkit-details-marker{display:none}
+.navdropdown{position:absolute;right:0;top:calc(100% + 10px);width:min(320px,88vw);max-height:70vh;overflow:auto;background:white;border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:0 18px 45px #1112;display:grid;gap:5px}
+.navdropdown a,.navcat{display:block;text-decoration:none;text-align:left;padding:11px 12px;border-radius:10px;border:0;background:white;font:inherit;font-size:14px;cursor:pointer}
+.navdropdown a:hover,.navcat:hover{background:var(--soft)}
+.navdropdown .menulabel{padding:8px 12px 3px;color:var(--muted);font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:.08em}
+#navcategories{display:grid;gap:2px}
+.hero{padding:23px 22px;background:linear-gradient(120deg,#fafafa,#f0f2f4)}
+.hero-inner{grid-template-columns:1fr;max-width:1000px}
+.hero h1{font-size:clamp(29px,4vw,43px);letter-spacing:-1.5px;margin:8px 0}
+.hero p{margin:8px 0;line-height:1.5;max-width:720px}
+.hero-art{display:none}
+.hero .eyebrow{font-size:10px}
+.hero .hero-actions{margin-top:12px!important}
+.agebar{padding:7px 12px;font-size:11px}
+main{padding:24px 20px 55px}
+.sectionhead{margin-bottom:12px}
+.sectionhead h2{font-size:25px}
+.categoryintro,.categorychips{display:none!important}
+.controls{margin:12px 0 16px;gap:8px}
+.field{padding:10px 12px}
+.grid{gap:12px}
+@media(max-width:650px){.nav{padding:10px 12px;gap:8px}.brand{font-size:19px}.brand small{font-size:8px;letter-spacing:1.3px}.navright{gap:6px}.navright .pill{display:none}.navright .btn{padding:9px 11px;font-size:12px}.navmenu summary{padding:9px 11px;font-size:12px}.hero{padding:20px 16px}.hero h1{font-size:31px}.hero p{font-size:14px}.hero .btn{padding:10px 13px;font-size:13px!important}main{padding:20px 12px 45px}.sectionhead h2{font-size:23px}.controls{display:grid;grid-template-columns:1fr 1fr}.search{grid-column:1/-1;min-width:0}.select{min-width:0;width:100%;font-size:13px}.grid{gap:9px}.productbody{padding:11px;gap:8px}.product h3{font-size:12px}.price{font-size:18px}.producttop{height:105px}}
+
+
+/* Inicio promocional compacto: pocas imágenes y catálogo bajo demanda */
+.promohero{max-width:1200px;margin:22px auto 0;padding:0 22px}
+.promohero-inner{position:relative;overflow:hidden;border-radius:22px;background:linear-gradient(115deg,#111318 0%,#22252d 58%,#353b45 100%);color:#fff;padding:28px 30px;display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;min-height:220px}
+.promo-kicker{display:inline-flex;align-items:center;gap:7px;border:1px solid #ffffff38;background:#ffffff12;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.promohero h1{font-size:clamp(28px,4vw,44px);line-height:1.02;letter-spacing:-1.6px;margin:14px 0 10px;max-width:600px}
+.promohero p{color:#e0e2e7;line-height:1.55;max-width:510px;margin:0}
+.promohero .promoactions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
+.promohero .btn-light{background:#fff;color:#14161b}
+.promohero-art{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:center;max-width:390px;justify-self:end;width:100%}
+.promohero-art img{width:100%;height:160px;object-fit:contain;background:#fff;border-radius:16px;padding:9px}
+.promohero-art img:last-child{height:125px;transform:translateY(10px)}
+.featured{max-width:1200px;margin:24px auto 0;padding:0 22px}
+.featured-head{display:flex;justify-content:space-between;align-items:end;gap:14px;margin-bottom:13px}
+.featured-head h2{margin:5px 0;font-size:clamp(22px,3vw,29px);letter-spacing:-.8px}
+.featured-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.featured-card{display:grid;grid-template-columns:112px 1fr;gap:13px;align-items:center;border:1px solid var(--line);border-radius:17px;padding:12px;min-width:0;background:#fff;box-shadow:0 7px 22px #111107}
+.featured-card img{width:112px;height:136px;object-fit:contain;background:#f7f7f8;border-radius:12px;padding:5px}
+.featured-card h3{font-size:13px;line-height:1.35;margin:6px 0;overflow-wrap:anywhere}
+.featured-price{font-size:20px;font-weight:900;letter-spacing:-.4px}
+.featured-meta{font-size:11px;color:var(--muted);line-height:1.4;margin:5px 0 9px}
+.featured-card .btn{padding:9px 12px;font-size:12px;width:100%}
+.stock-pill{display:inline-flex;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:850;background:#edf7f0;color:#17633a}
+.stock-pill.low{background:#fff4df;color:#8a4b00}
+.catalog-cta{max-width:1200px;margin:23px auto 0;padding:0 22px;text-align:center}
+.catalog-cta-inner{border:1px solid var(--line);border-radius:17px;padding:18px;background:#f8f9fa;display:flex;align-items:center;justify-content:space-between;gap:15px;text-align:left}
+.catalog-cta h3{margin:0 0 5px;font-size:17px}.catalog-cta p{margin:0;color:var(--muted);font-size:13px}
+#catalogo{scroll-margin-top:86px}
+#catalogo.catalog-closed #count,#catalogo.catalog-closed #filtros,#catalogo.catalog-closed #products{display:none!important}
+#catalogo.catalog-open #count{display:block}
+@media(max-width:900px){.featured-grid{grid-template-columns:1fr 1fr}.featured-card:last-child{display:none}.promohero-inner{grid-template-columns:1fr .75fr}.promohero-art img{height:135px}}
+@media(max-width:650px){.promohero{padding:0 12px;margin-top:12px}.promohero-inner{grid-template-columns:1fr;padding:22px 18px;gap:14px;min-height:0;border-radius:17px}.promohero h1{font-size:30px;margin:10px 0}.promohero p{font-size:13px}.promohero-art{display:flex;justify-self:start;max-width:260px;gap:8px}.promohero-art img{height:86px;width:86px;padding:4px}.promohero-art img:last-child{height:74px;width:74px;transform:none}.featured{padding:0 12px;margin-top:20px}.featured-head{align-items:start;flex-direction:column}.featured-grid{grid-template-columns:1fr;gap:9px}.featured-card{grid-template-columns:86px 1fr;padding:9px;gap:10px}.featured-card img{width:86px;height:105px}.featured-card h3{font-size:12px}.featured-price{font-size:18px}.featured-card .btn{width:auto}.featured-card:last-child{display:grid}.catalog-cta{padding:0 12px;margin-top:17px}.catalog-cta-inner{align-items:start;flex-direction:column;padding:15px}.catalog-cta .btn{width:100%}}
+
 </style>
 </head>
 <body>
-<div class="top">VGV · Tecnología, accesorios y más · Manta, Ecuador</div>
-<header class="nav">
-  <a class="brand" href="#">VGV<small>TIENDA ONLINE · MANTA, ECUADOR</small></a>
-  <div class="navright"><a class="pill" href="#catalogo">Ver catálogo</a><a class="btn" href="https://wa.me/593981255610?text=Hola%20VGV%2C%20quisiera%20informaci%C3%B3n%20sobre%20sus%20productos." target="_blank" rel="noopener">💬 WhatsApp</a><a class="btn" href="#pedido">🛒 Mi pedido <span id="cartcount">0</span></a></div>
+<div class="top">VGV · Manta, Ecuador · Atención por WhatsApp</div>
+<header class="nav" id="inicio">
+  <a class="brand" href="#inicio">VGV<small>TIENDA ONLINE · MANTA</small></a>
+  <div class="navright">
+    <details class="navmenu"><summary>☰ Menú</summary><div class="navdropdown"><a href="#inicio">Inicio</a><a href="#catalogo" data-open-catalog>Todos los productos</a><a href="#catalogo" data-open-catalog>Buscar y filtrar</a><a href="#pedido">🛒 Mi pedido (<span id="menucartcount">0</span>)</a><a href="https://wa.me/593981255610?text=Hola%20VGV%2C%20quisiera%20informaci%C3%B3n%20sobre%20sus%20productos." target="_blank" rel="noopener">Contactar por WhatsApp</a><div class="menulabel">Comprar por categoría</div><div id="navcategories"></div></div></details>
+    <a class="btn" href="https://wa.me/593981255610?text=Hola%20VGV%2C%20quisiera%20informaci%C3%B3n%20sobre%20sus%20productos." target="_blank" rel="noopener">💬 WhatsApp</a>
+    <a class="btn" href="#pedido">🛒 <span id="cartcount">0</span></a>
+  </div>
 </header>
-<section class="hero"><div class="hero-inner">
- <div><span class="eyebrow">VGV · Manta, Ecuador</span><h1>Encuentra lo que buscas, <span style="color:#16834a">en un solo lugar.</span></h1><p>Explora productos por categoría y marca, elige cantidades y prepara tu pedido en minutos. Nuestro equipo te atiende por WhatsApp.</p><div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px"><a class="btn" href="#catalogo">🛍️ Ver catálogo</a><a class="btn" style="background:#16834a;box-shadow:0 8px 24px #16834a40;font-size:16px;padding:15px 22px" href="https://wa.me/593981255610?text=Hola%20VGV%2C%20quisiera%20informaci%C3%B3n%20sobre%20sus%20productos." target="_blank" rel="noopener">💬 ¡Escríbenos por WhatsApp!</a></div></div>
- <div class="hero-art" aria-hidden="true" style="font-weight:900;letter-spacing:-5px;color:#15171b">VGV</div>
+<section class="promohero" aria-label="Promoción destacada VGV"><div class="promohero-inner">
+ <div><span class="promo-kicker">VGV · Manta, Ecuador</span><h1>Novedades destacadas, <span style="color:#a6e8bd">en un solo lugar.</span></h1><p>Explora una selección de productos disponibles. Consulta existencias y opciones de entrega antes de confirmar tu pedido.</p><div class="promoactions"><a class="btn btn-light" href="#destacados">Ver destacados</a><a class="btn" style="background:#16834a" href="https://wa.me/593981255610?text=Hola%20VGV%2C%20quiero%20consultar%20productos%20disponibles." target="_blank" rel="noopener">Consultar por WhatsApp</a></div></div>
+ <div class="promohero-art" aria-label="Productos MIJO de referencia"><img src="https://www.mijovape.co/wp-content/uploads/2023/05/mijo-vape-300-puff-mango-ice-4-800x884.jpg" alt="Imagen de referencia MIJO Mango Ice" loading="eager"><img src="https://www.mijovape.co/wp-content/uploads/2024/02/vica-kiwi-fresa-mijo-vape-800x800.jpg" alt="Imagen de referencia MIJO VICA Kiwi Fresa" loading="eager"></div>
 </div></section>
+<div class="agebar">Solo para personas adultas cuando corresponda. Los productos con nicotina contienen una sustancia adictiva; verifica la normativa aplicable y la disponibilidad antes de comprar.</div>
+<section class="featured" id="destacados"><div class="featured-head"><div><span class="eyebrow">Selección destacada</span><h2>Productos para consultar hoy</h2><div class="muted" style="font-size:13px">Precios de VGV · disponibilidad sujeta a confirmación.</div></div></div><div class="featured-grid" id="featuredProducts"></div></section>
+<div class="catalog-cta"><div class="catalog-cta-inner"><div><h3>¿Buscas algo específico?</h3><p>Abre el catálogo completo para filtrar por marca, categoría o precio.</p></div><button class="btn" id="openCatalog" type="button">Ver catálogo completo ↓</button></div></div>
 <div class="agebar">Aviso: los productos con nicotina u otras sustancias restringidas son solo para personas adultas y están sujetos a la normativa aplicable. La compra queda sujeta a verificación de edad y legalidad.</div>
 <main>
-<section id="catalogo">
+<section id="catalogo" class="catalog-closed">
  <div class="sectionhead"><div><span class="eyebrow">Catálogo</span><h2>Productos disponibles</h2><div class="muted" id="count">Cargando productos…</div></div></div>
- <div class="categoryintro" id="categorytiles"></div><div class="categorychips" id="categorychips" aria-label="Categorías de productos"></div><div class="controls"><input class="field search" id="search" type="search" placeholder="Buscar producto o sabor…" aria-label="Buscar producto"><select class="field select" id="categoryfilter" aria-label="Filtrar por categoría"><option value="all">Todas las categorías</option></select><select class="field select" id="brandfilter" aria-label="Filtrar por marca"><option value="all">Todas las marcas</option></select><select class="field select" id="sort" aria-label="Ordenar"><option value="default">Orden recomendado</option><option value="asc">Precio: menor a mayor</option><option value="desc">Precio: mayor a menor</option><option value="name">Nombre A–Z</option><option value="brand">Marca A–Z</option></select></div>
+ <div class="categoryintro" id="categorytiles"></div><div class="categorychips" id="categorychips" aria-label="Categorías de productos"></div><div class="controls" id="filtros"><input class="field search" id="search" type="search" placeholder="Buscar producto o sabor…" aria-label="Buscar producto"><select class="field select" id="categoryfilter" aria-label="Filtrar por categoría"><option value="all">Todas las categorías</option></select><select class="field select" id="brandfilter" aria-label="Filtrar por marca"><option value="all">Todas las marcas</option></select><select class="field select" id="sort" aria-label="Ordenar"><option value="default">Orden recomendado</option><option value="asc">Precio: menor a mayor</option><option value="desc">Precio: mayor a menor</option><option value="name">Nombre A–Z</option><option value="brand">Marca A–Z</option></select></div>
  <div class="grid" id="products"></div>
 </section>
 <section class="checkout" id="pedido">
@@ -112,6 +183,8 @@ function fillCategoryFilters(){
  $("categoryfilter").innerHTML='<option value="all">Todas las categorías</option>'+cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
  $("categorytiles").innerHTML=cats.slice(0,4).map(c=>`<button type="button" class="categorytile" data-cat="${escapeHtml(c)}"><strong>${escapeHtml(c)}</strong><small>${products.filter(p=>p.category===c).length} productos</small></button>`).join("");
  $("categorychips").innerHTML=['Todas',...cats].map((c,i)=>`<button type="button" class="categorychip ${i===0?'active':''}" data-cat="${i===0?'all':escapeHtml(c)}">${escapeHtml(c)}</button>`).join("");
+ $("navcategories").innerHTML=['Todas las categorías',...cats].map((c,i)=>`<button type="button" class="navcat" data-navcat="${i===0?'all':escapeHtml(c)}">${escapeHtml(c)}${i===0?'':` · ${products.filter(p=>p.category===c).length}`}</button>`).join("");
+ $("navcategories").querySelectorAll('[data-navcat]').forEach(b=>b.addEventListener('click',()=>{showFullCatalog();activeCategory=b.dataset.navcat;$("categoryfilter").value=activeCategory;renderProducts();document.querySelector('.navmenu').open=false;document.getElementById('catalogo').scrollIntoView({behavior:'smooth'});}));
  document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{activeCategory=b.dataset.cat;$("categoryfilter").value=activeCategory;document.querySelectorAll('.categorychip').forEach(x=>x.classList.toggle('active',x.dataset.cat===activeCategory));renderProducts();}));
 }
 function shippingCost(subtotal,method){
@@ -138,17 +211,41 @@ function renderProducts(){
  const inCart=cart.get(p.name)||0;
  const unavailable=p.stock<=0;
  const glyph=p.brand==="MIJO"?"MIJO":p.category==="Repuestos y accesorios"?"＋":p.category==="Líquidos y sales"?"◉":p.category==="Equipos y pods"?"▣":"VGV";
- return `<article class="product"><div class="producttop"><span class="productcat">${escapeHtml(p.category)}</span><span class="productglyph">${glyph}</span></div><div class="productbody"><div class="brandtag">${escapeHtml(p.brand)}</div><h3>${escapeHtml(p.name)}</h3><div class="price">${money(p.price)}</div><div class="stock">${unavailable?"Sin existencias registradas":`Stock: ${p.stock}${inCart?` · En carrito: ${inCart}`:""}`}</div><div class="cardqty" aria-label="Cantidad a agregar"><button type="button" data-qminus="${escapeHtml(p.name)}" ${unavailable||qty<=1?"disabled":""} aria-label="Reducir cantidad">−</button><input type="number" min="1" max="${Math.max(1,p.stock)}" value="${Math.min(qty,Math.max(1,p.stock))}" data-qinput="${escapeHtml(p.name)}" ${unavailable?"disabled":""} aria-label="Cantidad de ${escapeHtml(p.name)}"><button type="button" data-qplus="${escapeHtml(p.name)}" ${unavailable||qty>=p.stock?"disabled":""} aria-label="Aumentar cantidad">+</button></div><button class="btn add" data-name="${escapeHtml(p.name)}" ${unavailable?"disabled":""}>${unavailable?"Consultar disponibilidad":`Agregar ${Math.min(qty,p.stock)} al carrito`}</button></div></article>`;
+ const productPhoto=p.name==="MIJO 1500 PUFFS MANGO ICE 5%"?"https://www.mijovape.co/wp-content/uploads/2023/05/mijo-vape-1500-puff-mango-ice-4-800x884.jpg":p.name==="MIJO 3000 PUFFS MANGO ICE"?"https://www.mijovape.co/wp-content/uploads/2023/05/mijo-vape-300-puff-mango-ice-4-800x884.jpg":p.name==="MIJO VICA 6500 PUFFS KIWI FRESA"?"https://www.mijovape.co/wp-content/uploads/2024/02/vica-kiwi-fresa-mijo-vape-800x800.jpg":null;
+ return `<article class="product"><div class="producttop"><span class="productcat">${escapeHtml(p.category)}</span>${productPhoto?`<img class="productphoto" src="${productPhoto}" alt="${escapeHtml(p.name)}" loading="lazy">`:`<span class="productglyph">${glyph}</span>`}</div><div class="productbody"><div class="brandtag">${escapeHtml(p.brand)}</div><h3>${escapeHtml(p.name)}</h3><div class="price">${money(p.price)}</div><div class="stock">${unavailable?"Sin existencias registradas":`Stock: ${p.stock}${inCart?` · En carrito: ${inCart}`:""}`}</div><div class="cardqty" aria-label="Cantidad a agregar"><button type="button" data-qminus="${escapeHtml(p.name)}" ${unavailable||qty<=1?"disabled":""} aria-label="Reducir cantidad">−</button><input type="number" min="1" max="${Math.max(1,p.stock)}" value="${Math.min(qty,Math.max(1,p.stock))}" data-qinput="${escapeHtml(p.name)}" ${unavailable?"disabled":""} aria-label="Cantidad de ${escapeHtml(p.name)}"><button type="button" data-qplus="${escapeHtml(p.name)}" ${unavailable||qty>=p.stock?"disabled":""} aria-label="Aumentar cantidad">+</button></div><button class="btn add" data-name="${escapeHtml(p.name)}" ${unavailable?"disabled":""}>${unavailable?"Consultar disponibilidad":`Agregar ${Math.min(qty,p.stock)} al carrito`}</button></div></article>`;
  }).join("")||'<div class="empty">No encontramos productos con esa búsqueda.</div>';
  $("products").querySelectorAll("[data-name]").forEach(b=>b.addEventListener("click",()=>{const p=products.find(x=>x.name===b.dataset.name),q=selectedQty.get(p.name)||1;if(p&&p.stock>0){cart.set(p.name,Math.min(p.stock,(cart.get(p.name)||0)+q));selectedQty.set(p.name,1);renderProducts();renderCart();}}));
  $("products").querySelectorAll("[data-qminus]").forEach(b=>b.addEventListener("click",()=>{const n=b.dataset.qminus;selectedQty.set(n,Math.max(1,(selectedQty.get(n)||1)-1));renderProducts();}));
  $("products").querySelectorAll("[data-qplus]").forEach(b=>b.addEventListener("click",()=>{const n=b.dataset.qplus,p=products.find(x=>x.name===n);selectedQty.set(n,Math.min(p.stock,(selectedQty.get(n)||1)+1));renderProducts();}));
  $("products").querySelectorAll("[data-qinput]").forEach(inp=>inp.addEventListener("change",()=>{const p=products.find(x=>x.name===inp.dataset.qinput);let q=parseInt(inp.value,10);if(!Number.isFinite(q))q=1;selectedQty.set(p.name,Math.max(1,Math.min(p.stock||1,q)));renderProducts();}));
 }
+const featuredNames=["MIJO 1500 PUFFS MANGO ICE 5%","MIJO 3000 PUFFS MANGO ICE","MIJO VICA 6500 PUFFS KIWI FRESA"];
+const featuredImages={
+ "MIJO 1500 PUFFS MANGO ICE 5%":"https://www.mijovape.co/wp-content/uploads/2023/05/mijo-vape-1500-puff-mango-ice-4-800x884.jpg",
+ "MIJO 3000 PUFFS MANGO ICE":"https://www.mijovape.co/wp-content/uploads/2023/05/mijo-vape-300-puff-mango-ice-4-800x884.jpg",
+ "MIJO VICA 6500 PUFFS KIWI FRESA":"https://www.mijovape.co/wp-content/uploads/2024/02/vica-kiwi-fresa-mijo-vape-800x800.jpg"
+};
+function renderFeatured(){
+ const picks=featuredNames.map(n=>products.find(p=>p.name===n)).filter(p=>p&&p.stock>0&&p.price>0);
+ $("featuredProducts").innerHTML=picks.map(p=>{
+  const photo=featuredImages[p.name];
+  const low=p.stock<=5;
+  return `<article class="featured-card"><img src="${photo}" alt="${escapeHtml(p.name)}" loading="lazy"><div><span class="stock-pill ${low?'low':''}">${low?`Pocas unidades: ${p.stock}`:`Disponible: ${p.stock}`}</span><h3>${escapeHtml(p.name)}</h3><div class="featured-price">${money(p.price)}</div><div class="featured-meta">Marca MIJO · precio de VGV. Confirma disponibilidad antes de pagar.</div><button type="button" class="btn" data-featured-add="${escapeHtml(p.name)}">Agregar al pedido</button></div></article>`;
+ }).join("");
+ $("featuredProducts").querySelectorAll("[data-featured-add]").forEach(b=>b.addEventListener("click",()=>{const p=products.find(x=>x.name===b.dataset.featuredAdd);if(p&&p.stock>0){cart.set(p.name,Math.min(p.stock,(cart.get(p.name)||0)+1));renderProducts();renderCart();b.textContent="Agregado ✓";setTimeout(()=>{b.textContent="Agregar al pedido"},1200);}}));
+}
+function showFullCatalog(){
+ const section=$("catalogo");section.classList.remove("catalog-closed");section.classList.add("catalog-open");$("openCatalog").textContent="Ocultar catálogo completo ↑";$("openCatalog").setAttribute("aria-expanded","true");
+}
+function toggleFullCatalog(){
+ const section=$("catalogo");if(section.classList.contains("catalog-closed")){showFullCatalog();section.scrollIntoView({behavior:"smooth",block:"start"});}else{section.classList.add("catalog-closed");section.classList.remove("catalog-open");$("openCatalog").textContent="Ver catálogo completo ↓";$("openCatalog").setAttribute("aria-expanded","false");$("destacados").scrollIntoView({behavior:"smooth",block:"start"});}
+}
+$("openCatalog").addEventListener("click",toggleFullCatalog);
+document.querySelectorAll("[data-open-catalog]").forEach(a=>a.addEventListener("click",()=>showFullCatalog()));
 function getSubtotal(){return [...cart.entries()].reduce((sum,[name,qty])=>sum+products.find(p=>p.name===name).price*qty,0);}
 function renderCart(){
  const items=[...cart.entries()];
- $("cartcount").textContent=items.reduce((s,[n,q])=>s+q,0);
+ $("cartcount").textContent=items.reduce((s,[n,q])=>s+q,0);$("menucartcount").textContent=items.reduce((s,[n,q])=>s+q,0);
  if(!items.length){$("cartitems").innerHTML='<p class="muted">Todavía no has agregado productos.</p>';}
  else $("cartitems").innerHTML=items.map(([name,qty])=>{const p=products.find(x=>x.name===name);return `<div class="cartrow"><div><strong>${escapeHtml(name)}</strong><small>${money(p.price)} por unidad · ${money(p.price*qty)}</small><div class="qty"><button type="button" data-minus="${escapeHtml(name)}" aria-label="Quitar uno">−</button><span>${qty}</span><button type="button" data-plus="${escapeHtml(name)}" aria-label="Agregar uno">+</button><button type="button" data-remove="${escapeHtml(name)}" aria-label="Eliminar">Eliminar</button></div></div><strong>${money(p.price*qty)}</strong></div>`}).join("");
  $("cartitems").querySelectorAll("[data-minus]").forEach(b=>b.onclick=()=>changeQty(b.dataset.minus,-1));
@@ -172,7 +269,7 @@ $("orderform").addEventListener("submit",e=>{
  window.open("https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(msg),"_blank","noopener");
  if(receipt) alert("WhatsApp se abrirá con el resumen del pedido. Por seguridad, debes adjuntar manualmente el archivo del comprobante en ese chat. Esta página aún no lo sube a un servidor.");
 });
-fillBrandFilter();fillCategoryFilters();renderProducts();renderCart();
+fillBrandFilter();fillCategoryFilters();renderProducts();renderCart();renderFeatured();
 </script>
 </body>
 </html>
