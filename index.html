@@ -269,7 +269,47 @@ $("orderform").addEventListener("submit",e=>{
  window.open("https://wa.me/"+WHATSAPP+"?text="+encodeURIComponent(msg),"_blank","noopener");
  if(receipt) alert("WhatsApp se abrirá con el resumen del pedido. Por seguridad, debes adjuntar manualmente el archivo del comprobante en ese chat. Esta página aún no lo sube a un servidor.");
 });
-fillBrandFilter();fillCategoryFilters();renderProducts();renderCart();renderFeatured();
+async function syncInventory(){
+  try {
+    const res = await fetch(
+      "https://ovnelosqpvboattyipnl.supabase.co/rest/v1/inventario_vgv?select=codigo,producto,existencias,precio_pvp5",
+      {
+        headers: {
+          apikey: "sb_publishable_TYnYFSLqEQB-OpirWgENIA_LN-xzdad",
+          Authorization: "Bearer sb_publishable_TYnYFSLqEQB-OpirWgENIA_LN-xzdad"
+        }
+      }
+    );
+
+    if (!res.ok) throw new Error("No se pudo cargar el inventario");
+
+    const rows = await res.json();
+    const normalizar = s => String(s || "").trim().toLowerCase();
+
+    products.forEach(p => {
+      const row = rows.find(r => normalizar(r.producto) === normalizar(p.name));
+      if (row) {
+        p.stock = Number(row.existencias);
+        if (row.precio_pvp5 !== null) {
+          p.price = Number(row.precio_pvp5);
+        }
+      }
+    });
+
+    renderProducts();
+    renderCart();
+    renderFeatured();
+  } catch (error) {
+    console.error("Error al actualizar inventario:", error);
+  }
+}
+
+fillBrandFilter();
+fillCategoryFilters();
+renderProducts();
+renderCart();
+renderFeatured();
+syncInventory();
 </script>
 </body>
 </html>
