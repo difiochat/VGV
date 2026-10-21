@@ -272,7 +272,7 @@ $("orderform").addEventListener("submit",e=>{
 async function syncInventory(){
   try {
     const res = await fetch(
-      "https://ovnelosqpvboattyipnl.supabase.co/rest/v1/inventario_vgv?select=codigo,producto,existencias,precio_pvp5",
+      "https://ovnelosqpvboattyipnl.supabase.co/rest/v1/inventario_vgv?select=codigo,producto,existencias,precio_pvp5&order=producto.asc",
       {
         headers: {
           apikey: "sb_publishable_TYnYFSLqEQB-OpirWgENIA_LN-xzdad",
@@ -280,27 +280,54 @@ async function syncInventory(){
         }
       }
     );
-
-    if (!res.ok) throw new Error("No se pudo cargar el inventario");
+    if (!res.ok) throw new Error("No se pudo cargar el inventario de Supabase (" + res.status + ")");
 
     const rows = await res.json();
-    const normalizar = s => String(s || "").trim().toLowerCase();
+    if (!Array.isArray(rows) || rows.length === 0) {
+      throw new Error("Supabase devolvió el inventario vacío; se conserva el catálogo anterior por seguridad.");
+    }
 
-    products.forEach(p => {
-      const row = rows.find(r => normalizar(r.producto) === normalizar(p.name));
-      if (row) {
-        p.stock = Number(row.existencias);
-        if (row.precio_pvp5 !== null) {
-          p.price = Number(row.precio_pvp5);
-        }
-      }
-    });
+    const normalizar = s => String(s || "").trim().replace(/\s+/g, " ").toLocaleLowerCase("es");
+    const anteriores = new Map(products.map(p => [normalizar(p.name), p]));
+    const actualizados = rows
+      .filter(r => r.codigo != null && r.producto && r.precio_pvp5 != null && r.existencias != null)
+      .map(r => {
+        const nombre = String(r.producto).trim();
+        const previo = anteriores.get(normalizar(nombre));
+        const p = previo ? { ...previo } : { name: nombre };
+        p.name = nombre;
+        p.codigo = String(r.codigo);
+        p.stock = Math.max(0, Number(r.existencias) || 0);
+        p.price = Number(r.precio_pvp5);
+        p.brand = previo?.brand || inferBrand(nombre);
+        p.category = previo?.category || inferCategory(nombre);
+        return p;
+      });
 
+    if (!actualizados.length) throw new Error("No se encontraron filas válidas en el inventario.");
+
+    // Supabase pasa a ser la fuente del catálogo: agrega nuevos y deja fuera los que ya no estén.
+    products.splice(0, products.length, ...actualizados);
+
+    // Quita del carrito artículos que ya no están y ajusta cantidades al stock actual.
+    for (const [nombre, cantidad] of [...cart.entries()]) {
+      const p = products.find(x => normalizar(x.name) === normalizar(nombre));
+      if (!p || p.stock <= 0) cart.delete(nombre);
+      else if (cantidad > p.stock) cart.set(nombre, p.stock);
+    }
+    for (const nombre of [...selectedQty.keys()]) {
+      if (!products.some(p => normalizar(p.name) === normalizar(nombre))) selectedQty.delete(nombre);
+    }
+
+    fillBrandFilter();
+    fillCategoryFilters();
     renderProducts();
     renderCart();
     renderFeatured();
+    $("count").textContent = products.length + " productos cargados desde el inventario";
   } catch (error) {
     console.error("Error al actualizar inventario:", error);
+    $("count").textContent = "No se pudo actualizar el inventario; se muestra el catálogo guardado.";
   }
 }
 
