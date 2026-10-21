@@ -205,10 +205,18 @@ function inferModel(name){
  return n||"Modelo no especificado";
 }
 function fillModelFlavorFilters(){
- const models=[...new Set(products.map(p=>inferModel(p.name)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es"));
- const flavors=[...new Set(products.map(p=>inferFlavor(p.name)).filter(f=>f!=="Sin sabor especificado"))].sort((a,b)=>a.localeCompare(b,"es"));
+ // Las opciones dependientes se construyen con los productos de la marca seleccionada.
+ const brand=$("brandfilter").value;
+ const category=$("categoryfilter").value;
+ const base=products.filter(p=>(brand==="all"||p.brand===brand)&&(category==="all"||p.category===category));
+ const previousModel=$("modelfilter").value;
+ const previousFlavor=$("flavorfilter").value;
+ const models=[...new Set(base.map(p=>inferModel(p.name)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es"));
+ const flavors=[...new Set(base.map(p=>inferFlavor(p.name)).filter(f=>f!=="Sin sabor especificado"))].sort((a,b)=>a.localeCompare(b,"es"));
  $("modelfilter").innerHTML='<option value="all">Todos los modelos</option>'+models.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join("");
  $("flavorfilter").innerHTML='<option value="all">Todos los sabores</option>'+flavors.map(f=>`<option value="${escapeHtml(f)}">${escapeHtml(f)}</option>`).join("");
+ $("modelfilter").value=models.includes(previousModel)?previousModel:"all";
+ $("flavorfilter").value=flavors.includes(previousFlavor)?previousFlavor:"all";
 }
 function inferCategory(name){
  const n=name.toUpperCase();
@@ -306,7 +314,7 @@ function renderCart(){
  $("subtotal").textContent=money(subtotal);$("shipping").textContent=shipping===null?"Por confirmar":money(shipping);$("grandtotal").textContent=shipping===null?"Por confirmar":money(subtotal+shipping);
 }
 function changeQty(name,delta){const p=products.find(x=>x.name===name),q=(cart.get(name)||0)+delta;if(q<=0)cart.delete(name);else if(q<=p.stock)cart.set(name,q);renderProducts();renderCart();}
-$("search").addEventListener("input",renderProducts);$("brandfilter").addEventListener("change",renderProducts);$("modelfilter").addEventListener("change",renderProducts);$("flavorfilter").addEventListener("change",renderProducts);$("categoryfilter").addEventListener("change",()=>{activeCategory=$("categoryfilter").value;document.querySelectorAll(".categorychip").forEach(x=>x.classList.toggle("active",x.dataset.cat===activeCategory));renderProducts();});$("sort").addEventListener("change",renderProducts);
+$("search").addEventListener("input",renderProducts);$("brandfilter").addEventListener("change",()=>{fillModelFlavorFilters();renderProducts();});$("modelfilter").addEventListener("change",()=>{fillModelFlavorFilters();renderProducts();});$("flavorfilter").addEventListener("change",renderProducts);$("categoryfilter").addEventListener("change",()=>{activeCategory=$("categoryfilter").value;document.querySelectorAll(".categorychip").forEach(x=>x.classList.toggle("active",x.dataset.cat===activeCategory));fillModelFlavorFilters();renderProducts();});$("sort").addEventListener("change",renderProducts);
 document.querySelectorAll('input[name="shippingmethod"]').forEach(r=>r.addEventListener("change",renderCart));
 $("orderform").addEventListener("submit",e=>{
  e.preventDefault();if(!cart.size){alert("Agrega al menos un producto al carrito.");return;}
