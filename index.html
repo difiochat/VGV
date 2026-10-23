@@ -154,7 +154,7 @@ main{padding:24px 20px 55px}
 <section class="checkout" id="pedido">
  <div class="sectionhead"><div><span class="eyebrow">Finalizar compra</span><h2>Tu pedido</h2><div class="muted">Revisa tu carrito y completa tus datos.</div></div></div>
  <div class="checkoutgrid">
-  <div class="panel"><h3>Resumen del carrito</h3><div id="cartitems"><p class="muted">Todavía no has agregado productos.</p></div><div class="totals"><div class="totalrow"><span>Subtotal de productos</span><strong id="subtotal">$0.00</strong></div><div class="totalrow"><span>Envío</span><strong id="shipping">$5.00</strong></div><div class="totalrow final"><span>Total a pagar</span><strong id="grandtotal">$5.00</strong></div></div></div>
+  <div class="panel"><h3>Resumen del carrito</h3><div id="cartitems"><p class="muted">Todavía no has agregado productos.</p></div><div id="minimumOrderWarning" class="notice" role="status" aria-live="polite" style="margin-top:14px">Pedido mínimo: 10 unidades en total, combinando los productos que prefieras.</div><div class="totals"><div class="totalrow"><span>Subtotal de productos</span><strong id="subtotal">$0.00</strong></div><div class="totalrow"><span>Envío</span><strong id="shipping">$5.00</strong></div><div class="totalrow final"><span>Total a pagar</span><strong id="grandtotal">$5.00</strong></div></div></div>
   <div class="panel"><h3>Datos de entrega y pago</h3>
    <form id="orderform">
     <div class="formgrid">
@@ -372,6 +372,10 @@ function renderCart(){
  $("cartitems").querySelectorAll("[data-minus]").forEach(b=>b.onclick=()=>changeQty(b.dataset.minus,-1));
  $("cartitems").querySelectorAll("[data-plus]").forEach(b=>b.onclick=()=>changeQty(b.dataset.plus,1));
  $("cartitems").querySelectorAll("[data-remove]").forEach(b=>b.onclick=()=>{cart.delete(b.dataset.remove);renderProducts();renderCart();});
+ const totalUnits=items.reduce((sum,[,qty])=>sum+qty,0);
+ const minimumWarning=$("minimumOrderWarning");
+ if(totalUnits<10){minimumWarning.style.display="block";minimumWarning.textContent=`Pedido mínimo: 10 unidades en total. Tienes ${totalUnits}; agrega ${10-totalUnits} ${10-totalUnits===1?"unidad":"unidades"} más para confirmar tu pedido.`;}
+ else{minimumWarning.style.display="none";}
  const subtotal=getSubtotal(), method=document.querySelector('input[name="shippingmethod"]:checked').value, shipping=shippingCost(subtotal,method);
  $("subtotal").textContent=money(subtotal);$("shipping").textContent=shipping===null?"Por confirmar":money(shipping);$("grandtotal").textContent=shipping===null?"Por confirmar":money(subtotal+shipping);
 }
@@ -394,7 +398,8 @@ function fileToBase64(file){
 }
 $("orderform").addEventListener("submit",async e=>{
  e.preventDefault();
- if(!cart.size){alert("Agrega al menos un producto al carrito.");return;}
+ const totalUnits=[...cart.values()].reduce((sum,qty)=>sum+qty,0);
+ if(totalUnits<10){alert(`Para realizar un pedido necesitas un mínimo de 10 unidades en total, sin importar qué productos elijas. Actualmente tienes ${totalUnits}; agrega ${10-totalUnits} más.`);$("minimumOrderWarning").scrollIntoView({behavior:"smooth",block:"center"});return;}
  const receipt=$("receipt").files[0];
  if(!receipt){alert("Adjunta el comprobante de pago para confirmar el pedido.");return;}
  if(receipt.size>5*1024*1024){alert("El comprobante debe pesar máximo 5 MB.");return;}
