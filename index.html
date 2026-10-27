@@ -192,9 +192,9 @@ main{max-width:1280px}
 .thankyou-total strong{font-size:24px;white-space:nowrap}
 .thankyou-foot{font-size:12px;line-height:1.5;color:var(--muted)}
 /* Teléfono de contacto: destacar y recordar su verificación */
-.phone-label{font-size:15px!important;font-weight:850!important;color:#15171b}
-.phone-field{border:2px solid #16834a!important;background:#f5fbf7!important;font-size:17px!important;font-weight:750!important;min-height:48px}
-.phone-reminder{display:block;margin-top:6px;color:#17633a;font-size:12px;font-weight:700;line-height:1.45}
+.phone-label{font-size:14px!important;font-weight:800!important;color:#15171b}
+.phone-field{border:2px solid #16834a!important;background:#f5fbf7!important;font-size:15px!important;font-weight:700!important;min-height:44px}
+.phone-reminder{display:block;margin-top:6px;color:#17633a;font-size:11px;font-weight:650;line-height:1.4}
 </style>
 
 </head>
@@ -231,11 +231,13 @@ main{max-width:1280px}
 <section class="checkout" id="pedido">
  <div class="sectionhead"><div><span class="eyebrow">Finalizar compra</span><h2>Tu pedido</h2><div class="muted">Revisa tu carrito y completa tus datos.</div></div></div>
  <div class="checkoutgrid">
-  <div class="panel"><h3>Resumen del carrito</h3><div id="cartitems"><p class="muted">Todavía no has agregado productos.</p></div><div id="minimumOrderWarning" class="notice" role="status" aria-live="polite" style="margin-top:14px">Pedido mínimo: 10 unidades en total, combinando los productos que prefieras.</div><div class="totals"><div class="totalrow"><span>Subtotal de productos</span><strong id="subtotal">$0.00</strong></div><div class="totalrow" id="shippingRow" style="display:none"><span>Envío</span><strong id="shipping">$0.00</strong></div><div class="totalrow final"><span>Total a pagar</span><strong id="grandtotal">$5.00</strong></div></div></div>
+  <div class="panel"><h3>Resumen del carrito</h3><div id="cartitems"><p class="muted">Todavía no has agregado productos.</p></div><div id="minimumOrderWarning" class="notice" role="status" aria-live="polite" style="margin-top:14px">Pedido mínimo: 10 unidades en total, combinando los productos que prefieras.</div><div class="totals"><div class="totalrow"><span>Subtotal de productos</span><strong id="subtotal">$0.00</strong></div><div class="totalrow" id="vatRow" style="display:none"><span>IVA (15% por RUC)</span><strong id="vatAmount">$0.00</strong></div><div class="totalrow" id="shippingRow" style="display:none"><span>Envío</span><strong id="shipping">$0.00</strong></div><div class="totalrow final"><span>Total a pagar</span><strong id="grandtotal">$5.00</strong></div></div></div>
   <div class="panel"><h3>Datos de entrega y pago</h3>
    <form id="orderform">
     <div class="formgrid">
      <div><label for="customer">Nombre completo *</label><input class="field" id="customer" required autocomplete="name"></div>
+     <div><label for="documentType">Tipo de identificación *</label><select class="field" id="documentType" required><option value="cedula" selected>Cédula</option><option value="ruc">RUC</option></select></div>
+     <div><label for="documentNumber">Número de cédula o RUC *</label><input class="field" id="documentNumber" required inputmode="numeric" autocomplete="off" placeholder="Ingresa tu identificación"></div>
      <div><label class="phone-label" for="phone">📱 Número de teléfono *</label><input class="field phone-field" id="phone" required type="tel" autocomplete="tel" inputmode="tel" placeholder="Ej. 09XXXXXXXX"><small class="phone-reminder">Verifica que el número esté correcto y activo. Lo usaremos para coordinar tu pedido y evitar demoras.</small></div>
      <div class="full"><label for="customerEmail">Correo electrónico *</label><input class="field" id="customerEmail" required type="email" autocomplete="email" placeholder="tunombre@correo.com"></div>
      <div class="full"><label for="address">Dirección / ciudad de entrega (si aplica)</label><input class="field" id="address" autocomplete="street-address" placeholder="Si eliges retiro en tienda, puedes dejarlo vacío"></div>
@@ -266,6 +268,7 @@ main{max-width:1280px}
   <div class="thankyou-eta" id="thankYouEta"></div>
   <h3>Resumen de tu pedido</h3>
   <div id="thankYouItems" class="thankyou-items"></div>
+  <div class="thankyou-item" id="thankYouVatRow" style="display:none"><span>IVA (15% por RUC)</span><strong id="thankYouVat">$0.00</strong></div>
   <div class="thankyou-total"><span>Total estimado, incluido envío</span><strong id="thankYouTotal">$0.00</strong></div>
   <p class="thankyou-foot">La preparación y entrega se coordinarán después de verificar el pago y la disponibilidad.</p>
   <button type="button" class="btn" id="closeThankYou" style="width:100%;margin-top:12px">Entendido</button>
@@ -392,6 +395,7 @@ function showThankYou(payload){
  $("thankYouIntro").textContent=`Hola ${payload.customer.name}, recibimos tu pedido. La confirmación final queda sujeta a la verificación del pago y de la disponibilidad.`;
  $("thankYouEta").textContent=deliveryEstimate(document.querySelector('input[name="shippingmethod"]:checked')?.value||"tramaco",payload.address);
  $("thankYouItems").innerHTML=payload.items.map(item=>`<div class="thankyou-item"><span>${escapeHtml(item.name)} × ${item.quantity}</span><strong>${money(item.line_total)}</strong></div>`).join("");
+ $("thankYouVatRow").style.display=Number(payload.vat_amount||0)>0?"flex":"none"; $("thankYouVat").textContent=money(payload.vat_amount||0);
  $("thankYouTotal").textContent=money(payload.total??payload.subtotal);
  modal.style.display="grid";
 }
@@ -442,7 +446,8 @@ function showCartToast(addedQty, product){
  const toast=$("cartToast");
  const subtotal=getSubtotal();
  const method=document.querySelector('input[name="shippingmethod"]:checked')?.value||"tramaco";
- const total=subtotal+shippingCost(subtotal,method);
+ const vat=document.getElementById("documentType")?.value==="ruc"?subtotal*0.15:0;
+ const total=subtotal+vat+shippingCost(subtotal,method);
  $("toastTitle").textContent="Pedido actualizado";
  $("toastDetails").textContent=`Total de tu pedido, incluido envío: ${money(total)}.`;
  toast.classList.add("show");
@@ -500,8 +505,10 @@ function renderCart(){
  if(totalUnits<10){minimumWarning.style.display="block";minimumWarning.textContent=`Pedido mínimo: 10 unidades en total. Tienes ${totalUnits}; agrega ${10-totalUnits} ${10-totalUnits===1?"unidad":"unidades"} más para confirmar tu pedido.`;}
  else{minimumWarning.style.display="none";}
  const subtotal=getSubtotal(), method=document.querySelector('input[name="shippingmethod"]:checked')?.value||"tramaco", shipping=shippingCost(subtotal,method);
- $("subtotal").textContent=money(subtotal);$("shipping").textContent=money(shipping);$("grandtotal").textContent=money(subtotal+shipping);
- const headerTotal=$("headerCartTotal");if(headerTotal)headerTotal.textContent=money(subtotal+shipping);
+ const vat=($("documentType")?.value==="ruc")?Number((subtotal*0.15).toFixed(2)):0;
+ $("vatRow").style.display=vat>0?"flex":"none"; $("vatAmount").textContent=money(vat);
+ $("subtotal").textContent=money(subtotal);$("shipping").textContent=money(shipping);$("grandtotal").textContent=money(subtotal+vat+shipping);
+ const headerTotal=$("headerCartTotal");if(headerTotal)headerTotal.textContent=money(subtotal+vat+shipping);
 }
 function changeQty(name,delta){const p=products.find(x=>x.name===name),q=(cart.get(name)||0)+delta;if(q<=0)cart.delete(name);else if(q<=p.stock)cart.set(name,q);renderProducts();renderCart();}
 function updateFeaturedVisibility(){
@@ -521,6 +528,7 @@ $("flavorfilter").addEventListener("change",()=>{updateFeaturedVisibility();acti
 $("categoryfilter").addEventListener("change",()=>{updateFeaturedVisibility();activateSearchResults();activeCategory=$("categoryfilter").value;document.querySelectorAll(".categorychip").forEach(x=>x.classList.toggle("active",x.dataset.cat===activeCategory));fillModelFlavorFilters();renderProducts();});
 $("sort").addEventListener("change",()=>{if($("sort").value!=="default")$("destacados").classList.add("is-hidden");else updateFeaturedVisibility();activateSearchResults();renderProducts();});
 document.querySelectorAll('input[name="shippingmethod"]').forEach(r=>r.addEventListener("change",renderCart));
+$("documentType").addEventListener("change",()=>{const isRuc=$("documentType").value==="ruc";$("documentNumber").placeholder=isRuc?"Ingresa tu RUC":"Ingresa tu cédula";renderCart();});
 function fileToBase64(file){
  return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]||"");reader.onerror=()=>reject(new Error("No se pudo leer el comprobante."));reader.readAsDataURL(file);});
 }
@@ -528,6 +536,10 @@ $("orderform").addEventListener("submit",async e=>{
  e.preventDefault();
  const totalUnits=[...cart.values()].reduce((sum,qty)=>sum+qty,0);
  if(totalUnits<10){alert(`Para realizar un pedido necesitas un mínimo de 10 unidades en total, sin importar qué productos elijas. Actualmente tienes ${totalUnits}; agrega ${10-totalUnits} más.`);$("minimumOrderWarning").scrollIntoView({behavior:"smooth",block:"center"});return;}
+ const docNumber=$("documentNumber").value.trim();
+ if(!docNumber){alert("Ingresa tu número de cédula o RUC.");$("documentNumber").focus();return;}
+ if($("documentType").value==="cedula"&&!/^\d{10}$/.test(docNumber)){alert("La cédula debe contener 10 dígitos.");$("documentNumber").focus();return;}
+ if($("documentType").value==="ruc"&&!/^\d{13}$/.test(docNumber)){alert("El RUC debe contener 13 dígitos.");$("documentNumber").focus();return;}
  const receipt=$("receipt").files[0];
  if(!receipt){alert("Adjunta el comprobante de pago para confirmar el pedido.");return;}
  if(receipt.size>5*1024*1024){alert("El comprobante debe pesar máximo 5 MB.");return;}
@@ -536,12 +548,12 @@ $("orderform").addEventListener("submit",async e=>{
  const originalText=submitButton.textContent;submitButton.disabled=true;submitButton.textContent="Enviando pedido…";
  try{
   const method=document.querySelector('input[name="shippingmethod"]:checked').value;
-  const subtotal=getSubtotal(),ship=shippingCost(subtotal,method);
+  const subtotal=getSubtotal(),ship=shippingCost(subtotal,method),vat=$("documentType").value==="ruc"?Number((subtotal*0.15).toFixed(2)):0;
   const items=[...cart.entries()].map(([name,qty])=>{const p=products.find(x=>x.name===name);return {name,brand:p.brand||"",quantity:qty,unit_price:Number(p.price),line_total:Number((p.price*qty).toFixed(2))};});
   const address=method==="retiro"?"Retiro en tienda: Manta, Ilove Apple":$("address").value.trim();
   const payload={
-   customer:{name:$("customer").value.trim(),phone:$("phone").value.trim(),email:$("customerEmail").value.trim()},
-   items,subtotal:Number(subtotal.toFixed(2)),shipping_method:shippingLabel(method),shipping_cost:ship===null?null:Number(ship.toFixed(2)),total:ship===null?null:Number((subtotal+ship).toFixed(2)),
+   customer:{name:$("customer").value.trim(),document_type:$("documentType").value,document_number:$("documentNumber").value.trim(),phone:$("phone").value.trim(),email:$("customerEmail").value.trim()},
+   items,subtotal:Number(subtotal.toFixed(2)),vat_rate:vat>0?0.15:0,vat_amount:vat,shipping_method:shippingLabel(method),shipping_cost:ship===null?null:Number(ship.toFixed(2)),total:ship===null?null:Number((subtotal+vat+ship).toFixed(2)),
    address,notes:$("notes").value.trim(),notification_emails:ORDER_NOTIFICATION_EMAILS,
    receipt:{filename:receipt.name,content_type:receipt.type||"application/octet-stream",base64:await fileToBase64(receipt)}
   };
