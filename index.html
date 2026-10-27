@@ -163,6 +163,35 @@ main{max-width:1280px}
 }
 </style>
 
+
+<style>
+/* Ajustes pedidos: destacados dinámicos, total de carrito y envío discreto */
+#destacados.is-hidden{display:none!important}
+.cart-total-btn{white-space:nowrap;gap:7px}
+#headerCartTotal{font-weight:900;color:#c5ff45}
+#destacados .featured-card{box-shadow:0 5px 18px #11111112;border-color:#e3e6eb}
+#destacados .featured-card h3{font-size:14px;line-height:1.4}
+#destacados .featured-price{font-size:22px}
+#products .stock{font-size:14px!important;font-weight:800!important;color:#246b42!important;background:#eef8f1;border-radius:7px;padding:4px 7px;display:inline-block;width:max-content;max-width:100%}
+#products .product h3{font-size:15px!important;line-height:1.35!important;font-weight:850!important}
+#products .rowtotal{font-size:14px!important;font-weight:850!important;color:#17633a!important;background:#eff8f1;border-radius:8px;padding:5px 8px;line-height:1.25!important}
+@media(max-width:650px){#products .stock{font-size:12px!important}#products .product h3{font-size:13px!important}#products .rowtotal{font-size:12px!important}.cart-total-btn{font-size:11px!important;padding:9px 10px!important}}
+</style>
+
+<style>
+/* Confirmación de pedido y método Manporcar */
+.thankyou-modal{max-height:88vh;overflow:auto;box-shadow:0 24px 80px #0003}
+.thankyou-modal h2{font-size:clamp(25px,4vw,34px);letter-spacing:-.8px;margin:8px 0}
+.thankyou-check{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:#e7f6ec;color:#16834a;font-size:30px;font-weight:900;margin-bottom:16px}
+.thankyou-eta{padding:13px 15px;border:1px solid #dcefe2;background:#f2faf4;border-radius:12px;margin:16px 0;color:#215d38;font-size:14px;line-height:1.5}
+.thankyou-items{display:grid;gap:8px;margin:10px 0}
+.thankyou-item{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:9px 0;font-size:13px}
+.thankyou-item span:first-child{overflow-wrap:anywhere}
+.thankyou-total{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:2px solid var(--ink);padding-top:14px;margin-top:12px;font-size:14px}
+.thankyou-total strong{font-size:24px;white-space:nowrap}
+.thankyou-foot{font-size:12px;line-height:1.5;color:var(--muted)}
+</style>
+
 </head>
 <body>
 
@@ -171,7 +200,7 @@ main{max-width:1280px}
   <div class="navright">
     <details class="navmenu"><summary>☰ Menú</summary><div class="navdropdown"><a href="#inicio">Inicio</a><a href="#catalogo" data-open-catalog>Todos los productos</a><a href="#catalogo" data-open-catalog>Buscar y filtrar</a><a href="#pedido">🛒 Mi pedido (<span id="menucartcount">0</span>)</a><a href="https://wa.me/593981255610?text=Hola%20VGV%2C%20quisiera%20informaci%C3%B3n%20sobre%20sus%20productos." target="_blank" rel="noopener">Contactar por WhatsApp</a><div class="menulabel">Comprar por categoría</div><div id="navcategories"></div></div></details>
     <a class="btn" href="https://wa.me/593981255610?text=Hola%20VGV%2C%20quisiera%20informaci%C3%B3n%20sobre%20sus%20productos." target="_blank" rel="noopener">💬 WhatsApp</a>
-    <a class="btn" href="#pedido">🛒 <span id="cartcount">0</span></a>
+    <a class="btn cart-total-btn" href="#pedido">🛒 <span id="cartcount">0</span> · <span id="headerCartTotal">$0.00</span></a>
   </div>
 </header>
 <section class="promohero" aria-label="Promoción destacada VGV"><div class="promohero-inner">
@@ -197,7 +226,7 @@ main{max-width:1280px}
 <section class="checkout" id="pedido">
  <div class="sectionhead"><div><span class="eyebrow">Finalizar compra</span><h2>Tu pedido</h2><div class="muted">Revisa tu carrito y completa tus datos.</div></div></div>
  <div class="checkoutgrid">
-  <div class="panel"><h3>Resumen del carrito</h3><div id="cartitems"><p class="muted">Todavía no has agregado productos.</p></div><div id="minimumOrderWarning" class="notice" role="status" aria-live="polite" style="margin-top:14px">Pedido mínimo: 10 unidades en total, combinando los productos que prefieras.</div><div class="totals"><div class="totalrow"><span>Subtotal de productos</span><strong id="subtotal">$0.00</strong></div><div class="totalrow"><span>Envío</span><strong id="shipping">$5.00</strong></div><div class="totalrow final"><span>Total a pagar</span><strong id="grandtotal">$5.00</strong></div></div></div>
+  <div class="panel"><h3>Resumen del carrito</h3><div id="cartitems"><p class="muted">Todavía no has agregado productos.</p></div><div id="minimumOrderWarning" class="notice" role="status" aria-live="polite" style="margin-top:14px">Pedido mínimo: 10 unidades en total, combinando los productos que prefieras.</div><div class="totals"><div class="totalrow"><span>Subtotal de productos</span><strong id="subtotal">$0.00</strong></div><div class="totalrow" id="shippingRow" style="display:none"><span>Envío</span><strong id="shipping">$0.00</strong></div><div class="totalrow final"><span>Total a pagar</span><strong id="grandtotal">$5.00</strong></div></div></div>
   <div class="panel"><h3>Datos de entrega y pago</h3>
    <form id="orderform">
     <div class="formgrid">
@@ -206,10 +235,9 @@ main{max-width:1280px}
      <div class="full"><label for="customerEmail">Correo electrónico *</label><input class="field" id="customerEmail" required type="email" autocomplete="email" placeholder="tunombre@correo.com"></div>
      <div class="full"><label for="address">Dirección / ciudad de entrega (si aplica)</label><input class="field" id="address" autocomplete="street-address" placeholder="Si eliges retiro en tienda, puedes dejarlo vacío"></div>
      <div class="full"><label>Método de envío *</label>
-      <label class="radioopt"><input type="radio" name="shippingmethod" value="manporcar" checked><span><strong>Manporcar — $5</strong><br><small>Tarifa fija.</small></span></label>
-      <label class="radioopt"><input type="radio" name="shippingmethod" value="terminal"><span><strong>Por terminal</strong><br><small>Costo de envío por confirmar por WhatsApp.</small></span></label>
-      <label class="radioopt"><input type="radio" name="shippingmethod" value="tramaco"><span><strong>Tramaco / Servientrega</strong><br><small>Costo de envío por confirmar por WhatsApp.</small></span></label>
-      <label class="radioopt"><input type="radio" name="shippingmethod" value="retiro"><span><strong>Retiro en tienda — Manta, Ilove Apple</strong><br><small>Sin costo extra.</small></span></label>
+      <label class="radioopt"><input type="radio" name="shippingmethod" value="tramaco" checked><span><strong>Envío nacional · Tramaco / Servientrega</strong><br><small>Ciudades principales: 24–36 h · ciudades secundarias: 36–48 h.</small></span></label>
+      <label class="radioopt"><input type="radio" name="shippingmethod" value="manporcar"><span><strong>Envío por Manporcar</strong><br><small>Nos comunicaremos contigo en las próximas horas para coordinar la entrega.</small></span></label>
+      <label class="radioopt"><input type="radio" name="shippingmethod" value="retiro"><span><strong>Retiro en tienda — Manta, Ilove Apple</strong><br><small>Retiro sin costo adicional.</small></span></label>
      </div>
      <div class="full"><label for="receipt">Comprobante de pago (imagen o PDF)</label><input class="field" id="receipt" type="file" accept="image/*,.pdf,application/pdf" required><small class="muted">Adjunta una imagen o PDF legible para que VGV pueda revisar el pago. Tamaño máximo: 5 MB.</small></div>
      <div class="full"><label for="notes">Notas del pedido (opcional)</label><textarea class="field" id="notes" rows="3" placeholder="Referencia, variante, indicaciones…"></textarea></div>
@@ -224,6 +252,20 @@ main{max-width:1280px}
 </main>
 <a class="floatwa" href="https://wa.me/593981255610?text=Hola%20VGV%2C%20quisiera%20informaci%C3%B3n%20sobre%20sus%20productos." target="_blank" rel="noopener">💬 Escríbenos por WhatsApp</a>
 <div id="cartToast" class="toast" role="status" aria-live="polite"><strong id="toastTitle">Producto agregado</strong><span id="toastDetails"></span></div>
+<div class="modalbg" id="thankYouModal" role="dialog" aria-modal="true" aria-labelledby="thankYouTitle" style="z-index:1200">
+ <div class="modal thankyou-modal">
+  <div class="thankyou-check" aria-hidden="true">✓</div>
+  <span class="eyebrow">VGV · Confirmación</span>
+  <h2 id="thankYouTitle">¡Gracias por tu pedido!</h2>
+  <p id="thankYouIntro" class="muted">Recibimos tu solicitud. Revisaremos el comprobante de pago y confirmaremos los siguientes pasos.</p>
+  <div class="thankyou-eta" id="thankYouEta"></div>
+  <h3>Resumen de tu pedido</h3>
+  <div id="thankYouItems" class="thankyou-items"></div>
+  <div class="thankyou-total"><span>Total estimado, incluido envío</span><strong id="thankYouTotal">$0.00</strong></div>
+  <p class="thankyou-foot">La preparación y entrega se coordinarán después de verificar el pago y la disponibilidad.</p>
+  <button type="button" class="btn" id="closeThankYou" style="width:100%;margin-top:12px">Entendido</button>
+ </div>
+</div>
 <footer class="footer"><div class="footerin"><div><strong>VGV</strong><br><small>Tienda online · Manta, Ecuador</small></div><div><small>Precios en USD. Disponibilidad sujeta a confirmación.</small><br><small>Atención por WhatsApp: +593 981 255 610</small></div></div></footer>
 <script>
 const ORDER_API_URL="https://ovnelosqpvboattyipnl.supabase.co/functions/v1/send-order-notification";
@@ -322,14 +364,34 @@ function fillCategoryFilters(){
  $("categorychips").innerHTML=['Todas',...cats].map((c,i)=>`<button type="button" class="categorychip ${i===0?'active':''}" data-cat="${i===0?'all':escapeHtml(c)}">${escapeHtml(c)}</button>`).join("");
  $("navcategories").innerHTML=['Todas las categorías',...cats].map((c,i)=>`<button type="button" class="navcat" data-navcat="${i===0?'all':escapeHtml(c)}">${escapeHtml(c)}${i===0?'':` · ${products.filter(p=>p.category===c).length}`}</button>`).join("");
  $("navcategories").querySelectorAll('[data-navcat]').forEach(b=>b.addEventListener('click',()=>{showFullCatalog();activeCategory=b.dataset.navcat;$("categoryfilter").value=activeCategory;renderProducts();document.querySelector('.navmenu').open=false;document.getElementById('catalogo').scrollIntoView({behavior:'smooth'});}));
- document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{activeCategory=b.dataset.cat;$("categoryfilter").value=activeCategory;document.querySelectorAll('.categorychip').forEach(x=>x.classList.toggle('active',x.dataset.cat===activeCategory));renderProducts();}));
+ document.querySelectorAll('[data-cat]').forEach(b=>b.addEventListener('click',()=>{activeCategory=b.dataset.cat;$("categoryfilter").value=activeCategory;updateFeaturedVisibility();document.querySelectorAll('.categorychip').forEach(x=>x.classList.toggle('active',x.dataset.cat===activeCategory));renderProducts();}));
 }
 function shippingCost(subtotal,method){
- if(method==="manporcar") return 5;
  if(method==="retiro") return 0;
- return null;
+ // Tarifa definida para Tramaco/Servientrega. Manporcar conserva la opción y se confirma según ruta.
+ if(method==="tramaco") return subtotal<=200 ? 7 : 7 + Math.ceil((subtotal-200)/200);
+ if(method==="manporcar") return 7;
+ return 7;
 }
-function shippingLabel(method){return ({manporcar:"Manporcar",terminal:"Por terminal",tramaco:"Tramaco / Servientrega",retiro:"Retiro en tienda Manta, Ilove Apple"})[method]||method;}
+function shippingLabel(method){return ({tramaco:"Tramaco / Servientrega",manporcar:"Manporcar",retiro:"Retiro en tienda Manta, Ilove Apple"})[method]||"Tramaco / Servientrega";}
+function deliveryEstimate(method,address){
+ if(method==="retiro") return "Retiro en tienda: coordinaremos contigo cuándo puedes recoger tu pedido en Manta.";
+ if(method==="manporcar") return "En las próximas horas nos comunicaremos contigo para coordinar la entrega por Manporcar.";
+ const city=String(address||"").toLocaleLowerCase("es");
+ const secondary=["secundaria","cantón","canton","parroquia","rural"];
+ const isSecondary=secondary.some(t=>city.includes(t));
+ return isSecondary?"Tiempo estimado: 36–48 horas para ciudades secundarias.":"Tiempo estimado: 24–36 horas en ciudades principales. En ciudades secundarias puede ser de 36–48 horas.";
+}
+function showThankYou(payload){
+ const modal=$("thankYouModal");
+ $("thankYouIntro").textContent=`Hola ${payload.customer.name}, recibimos tu pedido. La confirmación final queda sujeta a la verificación del pago y de la disponibilidad.`;
+ $("thankYouEta").textContent=deliveryEstimate(document.querySelector('input[name="shippingmethod"]:checked')?.value||"tramaco",payload.address);
+ $("thankYouItems").innerHTML=payload.items.map(item=>`<div class="thankyou-item"><span>${escapeHtml(item.name)} × ${item.quantity}</span><strong>${money(item.line_total)}</strong></div>`).join("");
+ $("thankYouTotal").textContent=money(payload.total??payload.subtotal);
+ modal.style.display="grid";
+}
+$("closeThankYou").addEventListener("click",()=>{$("thankYouModal").style.display="none";});
+$("thankYouModal").addEventListener("click",e=>{if(e.target.id==="thankYouModal")e.currentTarget.style.display="none";});
 function visibleProducts(){
  const query=$("search").value.trim().toLocaleLowerCase("es"),brand=$("brandfilter").value,category=$("categoryfilter").value,flavor=$("flavorfilter").value;
  let arr=products.filter(p=>p.name.toLocaleLowerCase("es").includes(query)&&(brand==="all"||p.brand===brand)&&(category==="all"||p.category===category)&&(flavor==="all"||inferFlavor(p.name)===flavor));
@@ -363,7 +425,7 @@ const featuredImages={
  "MIJO VICA 6500 PUFFS KIWI FRESA":"https://www.mijovape.co/wp-content/uploads/2024/02/vica-kiwi-fresa-mijo-vape-800x800.jpg"
 };
 function renderFeatured(){
- const picks=products.filter(p=>p.stock>0&&p.price>0).slice().sort((a,b)=>b.stock-a.stock||a.name.localeCompare(b.name,"es")).slice(0,3);
+ const picks=products.filter(p=>p.stock>0&&p.price>0&&p.category==="Vapes desechables").slice().sort((a,b)=>b.stock-a.stock||a.name.localeCompare(b.name,"es")).slice(0,3);
  $("featuredProducts").innerHTML=picks.map(p=>{
   const photo=featuredImages[p.name];
   const low=p.stock<=5;
@@ -374,11 +436,10 @@ function renderFeatured(){
 function showCartToast(addedQty, product){
  const toast=$("cartToast");
  const subtotal=getSubtotal();
- const method=document.querySelector('input[name="shippingmethod"]:checked')?.value||"retiro";
- const ship=shippingCost(subtotal,method);
- const total=ship===null?subtotal:subtotal+ship;
- $("toastTitle").textContent=`Agregaste ${addedQty} ${addedQty===1?"unidad":"unidades"}`;
- $("toastDetails").textContent=`${product.name} · Total de productos: ${money(subtotal)} · Total estimado: ${ship===null?money(subtotal)+" + envío por confirmar":money(total)}`;
+ const method=document.querySelector('input[name="shippingmethod"]:checked')?.value||"tramaco";
+ const total=subtotal+shippingCost(subtotal,method);
+ $("toastTitle").textContent="Pedido actualizado";
+ $("toastDetails").textContent=`Total de tu pedido, incluido envío: ${money(total)}.`;
  toast.classList.add("show");
  clearTimeout(window.vgvToastTimer);
  window.vgvToastTimer=setTimeout(()=>toast.classList.remove("show"),3500);
@@ -389,7 +450,21 @@ function downloadVisibleCatalogPDF(){
  const content=rows.map(p=>`<tr><td>${escapeHtml(p.brand||"")}</td><td>${escapeHtml(p.name)}</td><td>${escapeHtml(p.category||"")}</td><td class="num">${money(p.price)}</td><td class="num">${p.stock}</td></tr>`).join("");
  const w=window.open("","_blank");
  if(!w){alert("Permite las ventanas emergentes para generar el catálogo PDF.");return;}
- w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Catálogo VGV - ${date}</title><style>body{font-family:Arial,sans-serif;color:#171717;padding:22px}h1{margin:0 0 5px;font-size:22px}p{font-size:11px;color:#555;margin:0 0 18px}table{width:100%;border-collapse:collapse;font-size:10px}th,td{padding:7px 6px;border-bottom:1px solid #ddd;text-align:left;vertical-align:top}th{background:#f0f2f4}td.num{text-align:right;white-space:nowrap}@page{size:A4;margin:12mm}</style></head><body><h1>VGV · Catálogo de productos</h1><p>Generado el ${date} · ${rows.length} productos. Precios en USD. Existencias sujetas a confirmación.</p><table><thead><tr><th>Marca</th><th>Producto</th><th>Categoría</th><th>Precio</th><th>Stock referencial</th></tr></thead><tbody>${content}</tbody></table><script>window.onload=()=>{window.print()}<\/script></body></html>`);
+ w.document.write(`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Catálogo VGV - ${date}</title><style>body{font-family:Arial,sans-serif;color:#171717;padding:22px}h1{margin:0 0 5px;font-size:22px}p{font-size:11px;color:#555;margin:0 0 18px}table{width:100%;border-collapse:collapse;font-size:10px}th,td{padding:7px 6px;border-bottom:1px solid #ddd;text-align:left;vertical-align:top}th{background:#f0f2f4}td.num{text-align:right;white-space:nowrap}@page{size:A4;margin:12mm}</style>
+<style>
+/* Ajustes pedidos: destacados dinámicos, total de carrito y envío discreto */
+#destacados.is-hidden{display:none!important}
+.cart-total-btn{white-space:nowrap;gap:7px}
+#headerCartTotal{font-weight:900;color:#c5ff45}
+#destacados .featured-card{box-shadow:0 5px 18px #11111112;border-color:#e3e6eb}
+#destacados .featured-card h3{font-size:14px;line-height:1.4}
+#destacados .featured-price{font-size:22px}
+#products .stock{font-size:14px!important;font-weight:800!important;color:#246b42!important;background:#eef8f1;border-radius:7px;padding:4px 7px;display:inline-block;width:max-content;max-width:100%}
+#products .product h3{font-size:15px!important;line-height:1.35!important;font-weight:850!important}
+#products .rowtotal{font-size:14px!important;font-weight:850!important;color:#17633a!important;background:#eff8f1;border-radius:8px;padding:5px 8px;line-height:1.25!important}
+@media(max-width:650px){#products .stock{font-size:12px!important}#products .product h3{font-size:13px!important}#products .rowtotal{font-size:12px!important}.cart-total-btn{font-size:11px!important;padding:9px 10px!important}}
+</style>
+</head><body><h1>VGV · Catálogo de productos</h1><p>Generado el ${date} · ${rows.length} productos. Precios en USD. Existencias sujetas a confirmación.</p><table><thead><tr><th>Marca</th><th>Producto</th><th>Categoría</th><th>Precio</th><th>Stock referencial</th></tr></thead><tbody>${content}</tbody></table><script>window.onload=()=>{window.print()}<\/script></body></html>`);
  w.document.close();
 }
 $("downloadCatalog").addEventListener("click",downloadVisibleCatalogPDF);
@@ -419,10 +494,15 @@ function renderCart(){
  const minimumWarning=$("minimumOrderWarning");
  if(totalUnits<10){minimumWarning.style.display="block";minimumWarning.textContent=`Pedido mínimo: 10 unidades en total. Tienes ${totalUnits}; agrega ${10-totalUnits} ${10-totalUnits===1?"unidad":"unidades"} más para confirmar tu pedido.`;}
  else{minimumWarning.style.display="none";}
- const subtotal=getSubtotal(), method=document.querySelector('input[name="shippingmethod"]:checked').value, shipping=shippingCost(subtotal,method);
- $("subtotal").textContent=money(subtotal);$("shipping").textContent=shipping===null?"Por confirmar":money(shipping);$("grandtotal").textContent=shipping===null?"Por confirmar":money(subtotal+shipping);
+ const subtotal=getSubtotal(), method=document.querySelector('input[name="shippingmethod"]:checked')?.value||"tramaco", shipping=shippingCost(subtotal,method);
+ $("subtotal").textContent=money(subtotal);$("shipping").textContent=money(shipping);$("grandtotal").textContent=money(subtotal+shipping);
+ const headerTotal=$("headerCartTotal");if(headerTotal)headerTotal.textContent=money(subtotal+shipping);
 }
 function changeQty(name,delta){const p=products.find(x=>x.name===name),q=(cart.get(name)||0)+delta;if(q<=0)cart.delete(name);else if(q<=p.stock)cart.set(name,q);renderProducts();renderCart();}
+function updateFeaturedVisibility(){
+ const active=Boolean($("search").value.trim())||$("brandfilter").value!=="all"||$("categoryfilter").value!=="all"||$("flavorfilter").value!=="all";
+ $("destacados").classList.toggle("is-hidden",active);
+}
 function activateSearchResults(){
  const section=$("catalogo");
  if(section.classList.contains("catalog-closed")){
@@ -430,11 +510,11 @@ function activateSearchResults(){
   window.setTimeout(()=>section.scrollIntoView({behavior:"smooth",block:"start"}),80);
  }
 }
-$("search").addEventListener("input",()=>{activateSearchResults();renderProducts();});
-$("brandfilter").addEventListener("change",()=>{activateSearchResults();fillModelFlavorFilters();renderProducts();});
-$("flavorfilter").addEventListener("change",()=>{activateSearchResults();renderProducts();});
-$("categoryfilter").addEventListener("change",()=>{activateSearchResults();activeCategory=$("categoryfilter").value;document.querySelectorAll(".categorychip").forEach(x=>x.classList.toggle("active",x.dataset.cat===activeCategory));fillModelFlavorFilters();renderProducts();});
-$("sort").addEventListener("change",()=>{activateSearchResults();renderProducts();});
+$("search").addEventListener("input",()=>{updateFeaturedVisibility();activateSearchResults();renderProducts();});
+$("brandfilter").addEventListener("change",()=>{updateFeaturedVisibility();activateSearchResults();fillModelFlavorFilters();renderProducts();});
+$("flavorfilter").addEventListener("change",()=>{updateFeaturedVisibility();activateSearchResults();renderProducts();});
+$("categoryfilter").addEventListener("change",()=>{updateFeaturedVisibility();activateSearchResults();activeCategory=$("categoryfilter").value;document.querySelectorAll(".categorychip").forEach(x=>x.classList.toggle("active",x.dataset.cat===activeCategory));fillModelFlavorFilters();renderProducts();});
+$("sort").addEventListener("change",()=>{if($("sort").value!=="default")$("destacados").classList.add("is-hidden");else updateFeaturedVisibility();activateSearchResults();renderProducts();});
 document.querySelectorAll('input[name="shippingmethod"]').forEach(r=>r.addEventListener("change",renderCart));
 function fileToBase64(file){
  return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(",")[1]||"");reader.onerror=()=>reject(new Error("No se pudo leer el comprobante."));reader.readAsDataURL(file);});
@@ -463,7 +543,7 @@ $("orderform").addEventListener("submit",async e=>{
   const response=await fetch(ORDER_API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
   const result=await response.json().catch(()=>({}));
   if(!response.ok)throw new Error(result.error||"No se pudo enviar el pedido. Inténtalo nuevamente.");
-  alert("¡Pedido recibido! Te enviamos una confirmación a tu correo. VGV revisará el comprobante y te contactará para coordinar el despacho después de verificar el pago.");
+  showThankYou(payload);
   cart.clear();$("orderform").reset();renderProducts();renderCart();
  }catch(err){console.error("Error al enviar pedido VGV:",err);alert("No se pudo confirmar el pedido en este momento. No se ha abierto WhatsApp ni se ha descontado stock. Inténtalo más tarde o contacta a VGV.");}
  finally{submitButton.disabled=false;submitButton.textContent=originalText;}
