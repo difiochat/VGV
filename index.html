@@ -190,6 +190,10 @@ main{max-width:1280px}
 .thankyou-total{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:2px solid var(--ink);padding-top:14px;margin-top:12px;font-size:14px}
 .thankyou-total strong{font-size:24px;white-space:nowrap}
 .thankyou-foot{font-size:12px;line-height:1.5;color:var(--muted)}
+/* Teléfono de contacto: destacar y recordar su verificación */
+.phone-label{font-size:15px!important;font-weight:850!important;color:#15171b}
+.phone-field{border:2px solid #16834a!important;background:#f5fbf7!important;font-size:17px!important;font-weight:750!important;min-height:48px}
+.phone-reminder{display:block;margin-top:6px;color:#17633a;font-size:12px;font-weight:700;line-height:1.45}
 </style>
 
 </head>
@@ -231,13 +235,13 @@ main{max-width:1280px}
    <form id="orderform">
     <div class="formgrid">
      <div><label for="customer">Nombre completo *</label><input class="field" id="customer" required autocomplete="name"></div>
-     <div><label for="phone">Teléfono *</label><input class="field" id="phone" required type="tel" autocomplete="tel"></div>
+     <div><label class="phone-label" for="phone">📱 Número de teléfono *</label><input class="field phone-field" id="phone" required type="tel" autocomplete="tel" inputmode="tel" placeholder="Ej. 09XXXXXXXX"><small class="phone-reminder">Verifica que el número esté correcto y activo. Lo usaremos para coordinar tu pedido y evitar demoras.</small></div>
      <div class="full"><label for="customerEmail">Correo electrónico *</label><input class="field" id="customerEmail" required type="email" autocomplete="email" placeholder="tunombre@correo.com"></div>
      <div class="full"><label for="address">Dirección / ciudad de entrega (si aplica)</label><input class="field" id="address" autocomplete="street-address" placeholder="Si eliges retiro en tienda, puedes dejarlo vacío"></div>
      <div class="full"><label>Método de envío *</label>
       <label class="radioopt"><input type="radio" name="shippingmethod" value="tramaco" checked><span><strong>Envío nacional · Tramaco / Servientrega</strong><br><small>Ciudades principales: 24–36 h · ciudades secundarias: 36–48 h.</small></span></label>
-      <label class="radioopt"><input type="radio" name="shippingmethod" value="manporcar"><span><strong>Envío por Manporcar</strong><br><small>Nos comunicaremos contigo en las próximas horas para coordinar la entrega.</small></span></label>
-      <label class="radioopt"><input type="radio" name="shippingmethod" value="retiro"><span><strong>Retiro en tienda — Manta, Ilove Apple</strong><br><small>Retiro sin costo adicional.</small></span></label>
+      <label class="radioopt"><input type="radio" name="shippingmethod" value="manporcar"><span><strong>Envío por Manporcar</strong><br><small>En las próximas horas nos comunicaremos contigo para coordinar la entrega.</small></span></label>
+      <label class="radioopt"><input type="radio" name="shippingmethod" value="retiro"><span><strong>Retiro en tienda — Manta, Ilove Apple</strong><br><small>Costo: $0. En las próximas horas nos comunicaremos contigo para coordinar el retiro.</small></span></label>
      </div>
      <div class="full"><label for="receipt">Comprobante de pago (imagen o PDF)</label><input class="field" id="receipt" type="file" accept="image/*,.pdf,application/pdf" required><small class="muted">Adjunta una imagen o PDF legible para que VGV pueda revisar el pago. Tamaño máximo: 5 MB.</small></div>
      <div class="full"><label for="notes">Notas del pedido (opcional)</label><textarea class="field" id="notes" rows="3" placeholder="Referencia, variante, indicaciones…"></textarea></div>
@@ -370,12 +374,12 @@ function shippingCost(subtotal,method){
  if(method==="retiro") return 0;
  // Tarifa definida para Tramaco/Servientrega. Manporcar conserva la opción y se confirma según ruta.
  if(method==="tramaco") return subtotal<=200 ? 7 : 7 + Math.ceil((subtotal-200)/200);
- if(method==="manporcar") return 7;
+ if(method==="manporcar") return 5;
  return 7;
 }
 function shippingLabel(method){return ({tramaco:"Tramaco / Servientrega",manporcar:"Manporcar",retiro:"Retiro en tienda Manta, Ilove Apple"})[method]||"Tramaco / Servientrega";}
 function deliveryEstimate(method,address){
- if(method==="retiro") return "Retiro en tienda: coordinaremos contigo cuándo puedes recoger tu pedido en Manta.";
+ if(method==="retiro") return "En las próximas horas nos comunicaremos contigo para coordinar el retiro en tienda en Manta. Costo de envío: $0.";
  if(method==="manporcar") return "En las próximas horas nos comunicaremos contigo para coordinar la entrega por Manporcar.";
  const city=String(address||"").toLocaleLowerCase("es");
  const secondary=["secundaria","cantón","canton","parroquia","rural"];
