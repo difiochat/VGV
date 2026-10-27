@@ -120,9 +120,52 @@ main{padding:24px 20px 55px}
 }
 </style>
 
+
+<style>
+/* VGV executive refresh: stronger hierarchy, stock and line total */
+:root{--ink:#171a21;--muted:#626a76;--line:#dfe3e8;--soft:#f4f6f8;--green:#137a49}
+body{background:#f7f8fa;color:var(--ink)}
+.nav{max-width:1280px;padding:17px 26px;border-bottom:1px solid #e4e7eb;background:rgba(255,255,255,.96)}
+.brand{font-size:25px;letter-spacing:-.8px}
+.brand small{color:#727986;font-size:10px}
+.promohero-inner{box-shadow:0 18px 42px #1112;border:1px solid #292d35}
+main{max-width:1280px}
+.sectionhead h2{font-size:clamp(28px,3vw,36px);letter-spacing:-1.1px}
+#products.grid{gap:10px!important}
+#products .product{border:1px solid #e0e4e9!important;border-radius:13px!important;background:#fff;box-shadow:0 3px 12px #171a2108;transition:box-shadow .18s,border-color .18s}
+#products .product:hover{border-color:#b8c2ce!important;box-shadow:0 8px 22px #171a2112}
+#products .productbody{padding:13px 17px!important;gap:7px 18px!important;min-height:112px}
+#products .brandtag{font-size:11px!important;letter-spacing:.1em;color:#69717d}
+#products .product h3{font-size:16px!important;line-height:1.35!important;font-weight:800;letter-spacing:-.2px;margin:0 0 2px!important;color:#171a21}
+#products .stock{display:inline-flex;align-items:center;gap:6px;width:fit-content;font-size:14px!important;line-height:1.35!important;font-weight:750;color:#17633a;background:#edf7f0;border:1px solid #d5ebdc;border-radius:8px;padding:5px 9px}
+#products .price{font-size:22px!important;font-weight:850;letter-spacing:-.45px;color:#171a21;line-height:1.15}
+#products .rowtotal{font-size:14px!important;line-height:1.3!important;font-weight:850!important;color:#145b39!important;background:#edf7f0;border:1px solid #d6ebde;border-radius:9px;padding:7px 10px;margin:2px 0 0!important;white-space:nowrap}
+#products .cardqty{padding:4px!important;gap:7px!important;border-radius:10px!important;background:#f8f9fa!important}
+#products .cardqty button{width:31px!important;height:31px!important;font-size:20px;border-radius:8px}
+#products .cardqty input{width:44px!important;font-size:14px!important;font-weight:800}
+#products .add{min-width:150px!important;padding:10px 14px!important;font-size:12px!important;border-radius:10px;background:#171a21}
+#products .add:hover{background:#303640}
+.controls{padding:15px;background:#fff;border:1px solid var(--line);border-radius:15px}
+.field{border-color:#d8dde4;border-radius:10px}
+.panel{box-shadow:0 5px 20px #111107;border-radius:16px}
+.checkout{border-top-color:#dfe3e8}
+.footer{background:#15181e}
+@media(max-width:650px){
+ .nav{padding:13px 12px}
+ #products .productbody{padding:12px!important;gap:7px 8px!important}
+ #products .product h3{font-size:14px!important;line-height:1.3!important}
+ #products .stock{font-size:13px!important;padding:5px 8px}
+ #products .price{font-size:19px!important}
+ #products .rowtotal{font-size:12px!important;white-space:normal;max-width:48vw;text-align:right}
+ #products .cardqty button{width:29px!important;height:29px!important}
+ #products .cardqty input{width:34px!important;font-size:13px!important}
+ #products .add{min-width:0!important;padding:9px!important;font-size:11px!important}
+}
+</style>
+
 </head>
 <body>
-<div class="top">VGV · Manta, Ecuador · Atención por WhatsApp</div>
+
 <header class="nav" id="inicio">
   <a class="brand" href="#inicio">VGV<small>TIENDA ONLINE · MANTA</small></a>
   <div class="navright">
